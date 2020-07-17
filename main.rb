@@ -71,7 +71,15 @@ module Enumerable
         check > 0 ? false : true
     end
 
-
+    def my_count(obj)
+        obj_length = obj.length
+        i = 0
+        obj.length.times do
+           yield(obj[i]) == false ? obj_length -= 1 : obj_length = obj_length
+           i += 1
+        end
+        obj_length
+    end
 end
 
 
@@ -95,3 +103,6 @@ include Enumerable
 # p Enumerable.my_any?([7, 1, 2])  { |item| item.even? }
 
 # p Enumerable.my_none?([7, 1, 5, 9, 11])  { |item| item.even? }
+
+p Enumerable.my_count([7, 2, 6, 9, 12]) { |item| item.even? }
+
