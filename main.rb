@@ -81,6 +81,17 @@ module Enumerable
         end
         obj_length
     end
+
+    def my_map(obj)
+        arr = Array.new()
+        i = 0
+        obj.length.times do
+            arr << yield(obj[i])
+            i += 1        
+        end
+      arr  
+    end
+
 end
 
 
@@ -105,5 +116,6 @@ include Enumerable
 
 # p Enumerable.my_none?([7, 1, 5, 9, 11])  { |item| item.even? }
 
-p Enumerable.my_count([7, 2, 6, 9, 12]) { |item| item.even? }
+# p Enumerable.my_count([7, 2, 6, 9, 12]) { |item| item.even? }
 
+p Enumerable.my_map([1, 2, 3,]) { |item| item * item }
