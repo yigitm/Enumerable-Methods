@@ -45,7 +45,8 @@ module Enumerable
         i = 0
         check = 0
         obj.length.times do
-            yield(obj[i]) == true  ? check += 1 : check = check
+            yield(obj[i]) == false  ? check += 1 : check = check
+            i += 1
         end 
         check > 0 ? false : true
     end
@@ -54,9 +55,10 @@ module Enumerable
         i = 0
         check = 0
         obj.length.times do
-            yield(obj[i]) == false  ? check += 1 : check = check
+            yield(obj[i]) == true  ? check += 1 : check = check
+            i += 1
         end 
-        check > 0 ? false : true  
+        check > 0 ? true : false
     end
 end
 
@@ -76,6 +78,6 @@ include Enumerable
 #  item.even?
 # }
 
-# p Enumerable.my_all?([7, 3, 1])  { |item| item.even? }
+p Enumerable.my_all?([7, 3, 2])  { |item| item.even? }
 
-p Enumerable.my_any?([7, 1, 3])  { |item| item.even? }
+p Enumerable.my_any?([7, 1, 2])  { |item| item.even? }
