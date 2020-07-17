@@ -28,31 +28,43 @@ module Enumerable
         obj.length.times do
            yield( obj[i], i)
            i += 1 
-        end    
+        end   
     end
 
     def my_select(obj)
         i = 0
+        arr = Array.new
         obj.length.times do
-           yield ( obj[i] ) == false ? obj[i].pop : obj[i]
-           i += 1
-        end    
+            yield(obj[i]) == true ? arr << obj[i] : arr
+            i += 1
+        end
+        arr    
     end
 
+    def my_all?(obj)
+        i = 0
+        checking_boolean = true
+        obj.length.times do
+            yield(obj[i]) == false ? checking_boolean = false : checking_boolean = checking_boolean
+        end 
+        checking_boolean
+    end
 end
 
 
 
 include Enumerable
-=begin
-Enumerable.my_each([2,3,78]) {|item| 
-    puts item + item
+
+Enumerable.my_each([2, 3, 78]) {|item| 
+ puts item + item
 }
 
-Enumerable.my_each_with_index([2,3,78]) {|item ,index| 
-puts "#{item} #{index}"
+Enumerable.my_each_with_index([2, 3, 78]) {|item ,index| 
+ puts "#{item} #{index}"
+} 
+
+p Enumerable.my_select([2, 3, 78, 7, 20, 43, 79]) {|item| 
+ item.even?
 }
-=end
-Enumerable.my_select([2,3,78]) {|item| 
-puts item.even?
-}
+
+p Enumerable.my_all?([4, 2, 6])  { |item| item.even? }
