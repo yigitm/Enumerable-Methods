@@ -24,9 +24,11 @@ module Enumerable
     end
 
     def my_each_with_index(obj)
-        result = my_each(obj) 
-        my_each_with_index(obj) 
-        puts my_each_with_index(obj)    
+        i = 0
+        obj.length.times do
+           yield( obj[i], i)
+           i += 1 
+        end    
     end
 end
 
@@ -38,6 +40,7 @@ Enumerable.my_each([2,3,78]) {|item|
     puts item + item
 }
 
-Enumerable.my_each_with_index([2,3,78]) {|item| 
-puts item + item
+Enumerable.my_each_with_index([2,3,78]) {|item ,index| 
+puts "#{item} #{index}"
 }
+
