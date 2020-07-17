@@ -60,6 +60,18 @@ module Enumerable
         end 
         check > 0 ? true : false
     end
+
+    def my_none?(obj)
+        i = 0
+        check = 0
+        obj.length.times do
+            yield(obj[i]) == true  ? check += 1 : check = check
+            i += 1
+        end 
+        check > 0 ? false : true
+    end
+
+
 end
 
 
@@ -78,6 +90,8 @@ include Enumerable
 #  item.even?
 # }
 
-p Enumerable.my_all?([7, 3, 2])  { |item| item.even? }
+# p Enumerable.my_all?([7, 3, 2])  { |item| item.even? }
 
-p Enumerable.my_any?([7, 1, 2])  { |item| item.even? }
+# p Enumerable.my_any?([7, 1, 2])  { |item| item.even? }
+
+# p Enumerable.my_none?([7, 1, 5, 9, 11])  { |item| item.even? }
