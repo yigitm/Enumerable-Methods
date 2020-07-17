@@ -30,12 +30,21 @@ module Enumerable
            i += 1 
         end    
     end
+
+    def my_select(obj)
+        i = 0
+        obj.length.times do
+           yield ( obj[i] ) == false ? obj[i].pop : obj[i]
+           i += 1
+        end    
+    end
+
 end
 
 
 
 include Enumerable
-
+=begin
 Enumerable.my_each([2,3,78]) {|item| 
     puts item + item
 }
@@ -43,4 +52,7 @@ Enumerable.my_each([2,3,78]) {|item|
 Enumerable.my_each_with_index([2,3,78]) {|item ,index| 
 puts "#{item} #{index}"
 }
-
+=end
+Enumerable.my_select([2,3,78]) {|item| 
+puts item.even?
+}
