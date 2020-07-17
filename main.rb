@@ -43,11 +43,20 @@ module Enumerable
 
     def my_all?(obj)
         i = 0
-        checking_boolean = true
+        check = 0
         obj.length.times do
-            yield(obj[i]) == false ? checking_boolean = false : checking_boolean = checking_boolean
+            yield(obj[i]) == true  ? check += 1 : check = check
         end 
-        checking_boolean
+        check > 0 ? false : true
+    end
+
+    def my_any?(obj)
+        i = 0
+        check = 0
+        obj.length.times do
+            yield(obj[i]) == false  ? check += 1 : check = check
+        end 
+        check > 0 ? false : true  
     end
 end
 
@@ -55,16 +64,18 @@ end
 
 include Enumerable
 
-Enumerable.my_each([2, 3, 78]) {|item| 
- puts item + item
-}
+# Enumerable.my_each([2, 3, 78]) {|item| 
+#  puts item + item
+# }
 
-Enumerable.my_each_with_index([2, 3, 78]) {|item ,index| 
- puts "#{item} #{index}"
-} 
+# Enumerable.my_each_with_index([2, 3, 78]) {|item ,index| 
+#  puts "#{item} #{index}"
+# } 
 
-p Enumerable.my_select([2, 3, 78, 7, 20, 43, 79]) {|item| 
- item.even?
-}
+# p Enumerable.my_select([2, 3, 78, 7, 20, 43, 79]) {|item| 
+#  item.even?
+# }
 
-p Enumerable.my_all?([4, 2, 6])  { |item| item.even? }
+# p Enumerable.my_all?([7, 3, 1])  { |item| item.even? }
+
+p Enumerable.my_any?([7, 1, 3])  { |item| item.even? }
