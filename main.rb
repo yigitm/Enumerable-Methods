@@ -18,9 +18,10 @@ module Enumerable
     def my_each(obj)
         i = 0
       obj.length.times do
-        yield(obj[i])
+        obj[i] = yield(obj[i])
         i += 1        
         end
+        obj
     end
 
     def my_each_with_index(obj)
