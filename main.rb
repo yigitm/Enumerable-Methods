@@ -13,7 +13,7 @@ To built enumerables;
 1. The behavior is similar to the #my_each method.
 2. This time the block is taking two parameters instead of one: element and number of index.
 =end
-
+include Enumerable
 module Enumerable
     def my_each
       return enum_for(:my_each) unless block_given?
@@ -25,69 +25,76 @@ module Enumerable
         self
     end
 
-    def my_each_with_index(obj)
+    def my_each_with_index
+        return enum_for(:my_each_with_index) unless block_given?
         i = 0
-        obj.length.times do
-           yield( obj[i], i)
-           i += 1 
-        end   
+        self.length.times do
+           yield( self[i], i )
+           i += 1
+        end 
     end
 
-    def my_select(obj)
+    def my_select
+        return enum_for(:my_select) unless block_given?
         i = 0
         arr = Array.new
-        obj.length.times do
-            yield(obj[i]) == true ? arr << obj[i] : arr
+        self.length.times do
+            yield(self[i]) == true ? arr << self[i] : arr
             i += 1
         end
-        arr    
+        arr
     end
 
-    def my_all?(obj)
+    def my_all?
+        return enum_for(:my_select) unless block_given?
         i = 0
         check = 0
-        obj.length.times do
-            yield(obj[i]) == false  ? check += 1 : check = check
+        self.length.times do
+            yield(self[i]) == false  ? check += 1 : check = check
             i += 1
         end 
         check > 0 ? false : true
     end
 
-    def my_any?(obj)
+    def my_any?
+        return enum_for(:my_select) unless block_given?
         i = 0
         check = 0
-        obj.length.times do
-            yield(obj[i]) == true  ? check += 1 : check = check
+        self.length.times do
+            yield(self[i]) == true  ? check += 1 : check = check
             i += 1
         end 
         check > 0 ? true : false
     end
 
-    def my_none?(obj)
+    def my_none?
+        return enum_for(:my_select) unless block_given?
         i = 0
         check = 0
-        obj.length.times do
-            yield(obj[i]) == true  ? check += 1 : check = check
+        self.length.times do
+            yield(self[i]) == true  ? check += 1 : check = check
             i += 1
         end 
         check > 0 ? false : true
     end
 
-    def my_count(obj)
-        obj_length = obj.length
+    def my_count
+        return enum_for(:my_select) unless block_given?
+        self_length = self.length
         i = 0
-        obj.length.times do
-           yield(obj[i]) == false ? obj_length -= 1 : obj_length = obj_length
+        self.length.times do
+           yield(self[i]) == false ? self_length -= 1 : self_length = self_length
            i += 1
         end
-        obj_length
+        self_length
     end
 
-    def my_map(obj)
+    def my_map
+        return enum_for(:my_select) unless block_given?
         arr = Array.new()
         i = 0
-        obj.length.times do
-            arr << yield(obj[i])
+        self.length.times do
+            arr << yield(self[i])
             i += 1        
         end
       arr  
@@ -95,21 +102,16 @@ module Enumerable
 
 end
 
+#  p arr.my_each_with_index {|item ,index| puts "#{index} #{item}" }
 
-
-include Enumerable
-
-p [1, 4, 6, 7].my_each {|item| 
- item + item
- }
-
-# Enumerable.my_each_with_index([2, 3, 78]) {|item ,index| 
+# p [1, 4, 6, 7].my_each {|item| 
+#  item + item
+#  }
 #  puts "#{item} #{index}"
 # } 
 
-# p Enumerable.my_select([2, 3, 78, 7, 20, 43, 79]) {|item| 
-#  item.even?
-# }
+arr = [2, 3, 78, 7, 20, 43, 79]
+p arr.my_count {|item| item.even?}
 
 # p Enumerable.my_all?([7, 3, 2])  { |item| item.even? }
 

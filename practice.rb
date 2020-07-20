@@ -11,7 +11,6 @@ end
 
 public :my_none?
 
-
 my_arr = [1, 5, 3]
 p my_arr.my_none? { |item| item.even? } 
 
