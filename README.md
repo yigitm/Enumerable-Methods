@@ -1,11 +1,12 @@
 # Enumerable-Methods
 
-This project consists of creating an method which takes an Array as a parameter and returns it sorted in ascending order.
+This project consists of creating 'Enumerable Methods' and processing them with code blocks & procs
 
 In this project:
 
-1. We built the #bubble_sort method.
-2. We built the #bubble_sort_by method which takes a block as a parameter.
+1. We built a Enumerable Module
+2. We added all neccessary methods
+3. We tested all methods for different cases
 
 ## Built with
 
