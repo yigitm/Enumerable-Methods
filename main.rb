@@ -106,16 +106,14 @@ module Enumerable
     end
 
     def my_inject
-        i = 0
-        result = 0
-        while i < (self.length - 1)
-            result += yield(self[i])
-            puts result
+        i = 1
+        result = self[0]
+        while i < self.length
+            result = yield(result, self[i])
             i += 1
         end
         result
     end
-
 end
 
 #  p arr.my_each_with_index {|item ,index| puts "#{index} #{item}" }
@@ -140,4 +138,4 @@ end
 #proc_1 = Proc.new 
 #p [1, 2, 3].my_map_proc { |item| item * item }
 
-p [1, 2, 3].my_inject {|num1, num2| num1 + num2}
+p [1, 2, 3, 4, 5, 6].my_inject {|num1, num2| num1 + num2}
