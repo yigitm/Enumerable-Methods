@@ -15,13 +15,14 @@ To built enumerables;
 =end
 
 module Enumerable
-    def my_each(obj)
-        i = 0
-      obj.length.times do
-        obj[i] = yield(obj[i])
+    def my_each
+      return enum_for(:my_each) unless block_given?
+      i = 0
+      self.length.times do
+        self[i] = yield(self[i])
         i += 1        
         end
-        obj
+        self
     end
 
     def my_each_with_index(obj)
@@ -98,9 +99,9 @@ end
 
 include Enumerable
 
-# Enumerable.my_each([2, 3, 78]) {|item| 
-#  puts item + item
-# }
+p [1, 4, 6, 7].my_each {|item| 
+ item + item
+ }
 
 # Enumerable.my_each_with_index([2, 3, 78]) {|item ,index| 
 #  puts "#{item} #{index}"
@@ -118,4 +119,4 @@ include Enumerable
 
 # p Enumerable.my_count([7, 2, 6, 9, 12]) { |item| item.even? }
 
-p Enumerable.my_map([1, 2, 3,]) { |item| item * item }
+#p Enumerable.my_map([1, 2, 3,]) { |item| item * item }
