@@ -90,14 +90,23 @@ module Enumerable
     end
 
     def my_map
-        return enum_for(:my_select) unless block_given?
         arr = Array.new()
         i = 0
         self.length.times do
             arr << yield(self[i])
             i += 1        
         end
-      arr  
+      arr
+    end
+
+    def my_map_proc(my_proc)
+        arr = Array.new()
+        i = 0
+        self.length.times do
+            arr << yield(self[i])
+            i += 1        
+        end
+      arr
     end
 
 end
@@ -110,8 +119,8 @@ end
 #  puts "#{item} #{index}"
 # } 
 
-arr = [2, 3, 78, 7, 20, 43, 79]
-p arr.my_count {|item| item.even?}
+# arr = [2, 3, 78, 7, 20, 43, 79]
+# p arr.my_count {|item| item.even?}
 
 # p Enumerable.my_all?([7, 3, 2])  { |item| item.even? }
 
@@ -121,4 +130,5 @@ p arr.my_count {|item| item.even?}
 
 # p Enumerable.my_count([7, 2, 6, 9, 12]) { |item| item.even? }
 
-#p Enumerable.my_map([1, 2, 3,]) { |item| item * item }
+my_proc = Proc.new { |item| item * item }
+p [1, 2, 3,].my_map_proc(my_proc)
