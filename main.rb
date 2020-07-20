@@ -105,7 +105,7 @@ module Enumerable
 end
 
 def multiply_els(obj)
-    obj.inject { |x, y| x * y }
+  obj.inject { |x, y| x * y }
 end
 
 p multiply_els([2, 4, 5])
