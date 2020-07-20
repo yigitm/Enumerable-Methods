@@ -46,7 +46,6 @@ module Enumerable
     end
 
     def my_all?
-        return enum_for(:my_select) unless block_given?
         i = 0
         check = 0
         self.length.times do
@@ -57,7 +56,6 @@ module Enumerable
     end
 
     def my_any?
-        return enum_for(:my_select) unless block_given?
         i = 0
         check = 0
         self.length.times do
@@ -68,7 +66,6 @@ module Enumerable
     end
 
     def my_none?
-        return enum_for(:my_select) unless block_given?
         i = 0
         check = 0
         self.length.times do
@@ -79,7 +76,7 @@ module Enumerable
     end
 
     def my_count
-        return enum_for(:my_select) unless block_given?
+        return enum_for(:my_count) unless block_given?
         self_length = self.length
         i = 0
         self.length.times do
@@ -89,24 +86,34 @@ module Enumerable
         self_length
     end
 
-    def my_map
-        arr = Array.new()
-        i = 0
-        self.length.times do
-            arr << yield(self[i])
-            i += 1        
+    def my_map(my_proc=nil)
+      arr = Array.new()
+      i = 0
+        if block_given?
+          self.length.times do
+              arr << yield(self[i])
+              i += 1        
+          end
+        elsif my_proc != nil
+            self.length.times do
+                arr << my_proc.call(self[i])
+                i += 1        
+            end
+        else 
+            return enum_for(:my_map)
         end
       arr
     end
 
-    def my_map_proc(my_proc)
-        arr = Array.new()
+    def my_inject
         i = 0
-        self.length.times do
-            arr << yield(self[i])
-            i += 1        
+        result = 0
+        while i < (self.length - 1)
+            result += yield(self[i])
+            puts result
+            i += 1
         end
-      arr
+        result
     end
 
 end
@@ -130,5 +137,7 @@ end
 
 # p Enumerable.my_count([7, 2, 6, 9, 12]) { |item| item.even? }
 
-my_proc = Proc.new { |item| item * item }
-p [1, 2, 3,].my_map_proc(my_proc)
+#proc_1 = Proc.new 
+#p [1, 2, 3].my_map_proc { |item| item * item }
+
+p [1, 2, 3].my_inject {|num1, num2| num1 + num2}
