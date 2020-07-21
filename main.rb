@@ -1,75 +1,121 @@
 module Enumerable
   def my_each
     return enum_for(:my_each) unless block_given?
-    
-    self_class = self.class
+        
     new_self = self
-
-    if self_class == Array
-      new_self = self
-    elsif self_class == Range
-     new_self = self.to_a
-    else
-      new_self = self.flatten
-    end
     i = 0
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
+    if self_class == Array || self_class == Range
       new_self.length.times do
-      yield(new_self[i])
-      i += 1
+            yield(new_self[i])
+            i += 1
+          end
+        elsif self_class == Hash
+          new_self.length/2.times do
+            yield(new_self[i], new_self[i+1])
+            i += 2
+          end
+        else 
+          new_self
     end
     new_self
   end
+    
 
   def my_each_with_index
     return enum_for(:my_each_with_index) unless block_given?
 
+    new_self = self
     i = 0
-    length.times do
-      yield(self[i], i)
-      i += 1
-    end
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a  
+      new_self.length.times do
+            yield(new_self[i], i)
+            i += 1
+        end
+    new_self
   end
 
   def my_select
     return enum_for(:my_select) unless block_given?
 
     i = 0
-    arr = []
-    length.times do
-      yield(self[i]) == true ? arr << self[i] : arr
+    arr = Array.new
+    new_self = self
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
+    new_self.length.times do
+      yield(new_self[i]) == true ? arr = arr.push(new_self[i]) : arr
       i += 1
     end
-    arr
+     arr
   end
 
-  def my_all?
+  def my_all?(parameter=nil)
     i = 0
     check = 0
-    length.times do
-      yield(self[i]) == false ? check += 1 : check = check
+    new_self = self
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
+    while block_given? && i < new_self.length  
+      yield(new_self[i]) == true ? check += 1 : check = check
       i += 1
     end
-    check.positive? ? false : true
+    if parameter.instance_of?(Regexp)
+        new_self.length.times do 
+          new_self[i] =~ parameter ? check += 1 : check = check
+          i += 1
+        end
+      else 
+        new_self.length.times do
+          new_self[i].class == parameter ? check += 1 : check = check
+          i += 1
+        end
+      end
+      check == new_self.length ? true : false
   end
 
-  def my_any?
+  def my_any?(parameter=nil)
     i = 0
     check = 0
-    length.times do
-      yield(self[i]) == true ? check += 1 : check = check
+    new_self = self
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
+    while block_given? && i < new_self.length  
+      yield(new_self[i]) == true ? check += 1 : check = check
       i += 1
     end
-    check.positive? ? true : false
+    if parameter.instance_of?(Regexp)
+      new_self.length.times do 
+      new_self[i] =~ parameter ? check += 1 : check = check
+      i += 1
+      end
+    else 
+      new_self.length.times do
+      new_self[i].class == parameter ? check += 1 : check = check
+      i += 1
+      end
+    end
+    check.positive? ? true : false  
   end
 
-  def my_none?
+  def my_none?(parameter=nil)
     i = 0
     check = 0
-    length.times do
-      yield(self[i]) == true ? check += 1 : check = check
+    new_self = self
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
+    while block_given? && i < new_self.length  
+      yield(new_self[i]) == true ? check += 1 : check = check
       i += 1
     end
-    check.positive? ? false : true
+    if parameter.instance_of?(Regexp)
+      new_self.length.times do 
+      new_self[i] =~ parameter ? check += 1 : check = check
+      i += 1
+      end
+    else 
+      new_self.length.times do
+      new_self[i].class == parameter ? check += 1 : check = check
+      i += 1
+      end
+    end
+    check.positive? ? false : true 
   end
 
   def my_count
@@ -77,8 +123,10 @@ module Enumerable
 
     self_length = length
     i = 0
+    new_self = self
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
     length.times do
-      yield(self[i]) == false ? self_length -= 1 : self_length = self_length
+      yield(new_self[i]) == false ? self_length -= 1 : self_length = self_length
       i += 1
     end
     self_length
@@ -87,14 +135,16 @@ module Enumerable
   def my_map(my_proc = nil)
     arr = []
     i = 0
+    new_self = self
+    new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
     if block_given?
-      length.times do
-        arr << yield(self[i])
+      new_self.length.times do
+        arr = arr << yield(new_self[i])
         i += 1
       end
     elsif !my_proc.nil?
-      length.times do
-        arr << my_proc.call(self[i])
+      new_self.length.times do
+        arr = arr << my_proc.call(new_self[i])
         i += 1
       end
     else
