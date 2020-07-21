@@ -1,13 +1,23 @@
 module Enumerable
   def my_each
     return enum_for(:my_each) unless block_given?
+    
+    self_class = self.class
+    new_self = self
 
+    if self_class == Array
+      new_self = self
+    elsif self_class == Range
+     new_self = self.to_a
+    else
+      new_self = self.flatten
+    end
     i = 0
-    length.times do
-      self[i] = yield(self[i])
+      new_self.length.times do
+      yield(new_self[i])
       i += 1
     end
-    self
+    new_self
   end
 
   def my_each_with_index
@@ -108,4 +118,8 @@ def multiply_els(obj)
   obj.inject { |x, y| x * y }
 end
 
-p multiply_els([2, 4, 5])
+# p multiply_els([2, 4, 5])
+
+grades = { "Jane Doe" => 10, "Jim Doe" => 6 }
+
+p [1,2,3].my_each
