@@ -1,64 +1,27 @@
-module Enumerable
-  def my_each
-    return enum_for(:my_each) unless block_given?
-    
-    self_class = self.class
-    new_self = self
-    i = 0
-
-    self_class == Array || self_class == Hash ? new_self = self.flatten : new_self = self.to_a
-    if self_class == Array || self_class == Range
-      new_self.length.times do
-        yield(new_self[i])
-        i += 1
-      end
-    elsif self_class == Hash
-      new_self.length/2.times do
-        yield(new_self[i], new_self[i+1])
-        i += 2
-      end
-    else 
-      new_self
-    end
-    new_self
-  end
-
-  def my_each_with_index
-    return enum_for(:my_each_with_index) unless block_given?
-
-    self_class = self.class
-    new_self = self
-    i = 0
-    self_class == Array || self_class == Hash ? new_self = self.flatten : new_self = self.to_a   
-      new_self.length.times do
-            yield(new_self[i], i)
-            i += 1
-          end
-    new_self
-  end
-
-
-
-  def my_select
-    return enum_for(:my_select) unless block_given?
-
-    i = 0
-    arr = Array.new
-    self_class = self.class
-    new_self = self
-    self_class == Array || self_class == Hash ? new_self = self.flatten : new_self = self.to_a
-    new_self.length.times do
-      yield(new_self[i]) == true ? arr = arr.push(new_self[i])  : arr
+def my_inject(sym=nil)
+  i = 0
+  new_self = self
+  new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? new_self = self.flatten : new_self = self.to_a
+  result = new_self[0]
+  if block_given?
+    while i < length-1
+      result = yield(result, new_self[i+1].to_i)
+      p result
       i += 1
     end
-     arr
+  elsif sym != nil 
+    sym = sym.to_s
+    while i < new_self.length-1
+      self_elem = new_self[i+1]
+      result = result.send(sym, self_elem.to_i)
+      i += 1
+    end
   end
+  result
 end
 
-grades = { "Jane Doe" => 10, "Jim Doe" => 6 }
-#p [1,2,3].my_each_with_index { |x, y|  puts "Element: #{x} => Index: #{y}"}
-
-p grades.my_select{|x| x.is_a? Integer }
+public :my_inject
+p (1..4).my_inject(:+)
 
 # p { "Jane Doe" => 10, "Jim Doe" => 6 }.my_each { |x|  x * x += 1  }
 # def multiply_els(obj)
