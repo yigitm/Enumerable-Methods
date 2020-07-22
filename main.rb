@@ -26,14 +26,24 @@ module Enumerable
   def my_each_with_index
     return enum_for(:my_each_with_index) unless block_given?
 
+    arr = []
     new_self = self
     i = 0
+    a = 0
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    new_self.length.times do
-      yield(new_self[i], i)
-      i += 1
+    if instance_of?(Array) || instance_of?(Range)
+      new_self.length.times do
+        yield(new_self[i], i)
+        i += 1
+      end
+    elsif instance_of?(Hash)
+        while i < new_self.length/2
+          yield(new_self.slice(a,2), i)
+          i += 1
+          a += 2
+        end
     end
-    new_self
+    self
   end
 
   def my_select
