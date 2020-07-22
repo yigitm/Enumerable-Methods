@@ -194,3 +194,4 @@ end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
+p [1,2,3].my_all?
