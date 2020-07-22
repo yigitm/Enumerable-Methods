@@ -1,3 +1,7 @@
+# rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
+
 module Enumerable
   def my_each
     return enum_for(:my_each) unless block_given?
@@ -5,18 +9,16 @@ module Enumerable
     new_self = self
     i = 0
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    if self_class == Array || self_class == Range
+    if instance_of?(Array) || instance_of?(Range)
       new_self.length.times do
         yield(new_self[i])
         i += 1
       end
-    elsif self_class == Hash
+    elsif instance_of?(Hash)
       new_self.length / 2.times do
         yield(new_self[i], new_self[i + 1])
         i += 2
       end
-    else
-      new_self
     end
     new_self
   end
@@ -67,7 +69,7 @@ module Enumerable
         new_self[i].class == parameter ? check += 1 : check = check
         i += 1
       end
-      end
+    end
     check == new_self.length
   end
 
@@ -178,3 +180,7 @@ end
 def multiply_els(obj)
   obj.my_inject(:*)
 end
+
+# rubocop:enable Metrics/ModuleLength
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
