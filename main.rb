@@ -20,7 +20,7 @@ module Enumerable
         i += 2
       end
     end
-    new_self
+    self
   end
 
   def my_each_with_index
