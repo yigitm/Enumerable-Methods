@@ -230,17 +230,34 @@ module Enumerable
   def my_map(my_proc = nil)
     arr = []
     i = 0
+    a = 0
     new_self = self
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    if block_given?
-      new_self.length.times do
-        arr = arr << yield(new_self[i])
-        i += 1
+    if !my_proc.nil? || !my_proc.nil? && block_given?
+      if instance_of?(Hash)
+        while i < new_self.length/2
+          arr = arr << yield(new_self.slice(a,2))
+          i += 1
+          a += 2
+        end 
+      else
+        new_self.length.times do
+          arr = arr << my_proc.call(new_self[i])
+          i += 1
+        end
       end
-    elsif !my_proc.nil?
-      new_self.length.times do
-        arr = arr << my_proc.call(new_self[i])
-        i += 1
+    elsif block_given?
+      if instance_of?(Hash)
+        while i < new_self.length/2
+          arr = arr << yield(new_self.slice(a,2))
+          i += 1
+          a += 2
+        end 
+      else
+        new_self.length.times do
+          arr = arr << yield(new_self[i])
+          i += 1
+        end
       end
     else
       return enum_for(:my_map)
@@ -278,4 +295,6 @@ end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
-p [1,2,3].my_all?
+my_proc = Proc.new {|x| x > 10}
+grades = {"a" => 10, "b" => 3}
+p grades.map {|x| puts "#{x}" }
