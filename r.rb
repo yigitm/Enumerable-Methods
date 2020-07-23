@@ -54,4 +54,4 @@ module Enumerable
 
 end
 
-p [1,2,3].my_all?
+#p [1,2,nil].my_all?

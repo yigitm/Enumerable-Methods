@@ -3,22 +3,24 @@
 # rubocop:disable Metrics/PerceivedComplexity
 
 module Enumerable
-  def my_each
-    return enum_for(:my_each) unless block_given?
+  def my_each(&block)
+    return enum_for(:my_each_with_index) unless block_given?
 
     new_self = self
     i = 0
+    a = 0
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    if instance_of?(Array) || instance_of?(Range)
-      new_self.length.times do
-        yield(new_self[i])
-        i += 1
-      end
-    elsif instance_of?(Hash)
-      new_self.length / 2.times do
-        yield(new_self[i], new_self[i + 1])
-        i += 2
-      end
+    if instance_of?(Hash)
+        while i < new_self.length/2
+            block.arity == 1 ? yield(new_self.slice(a,2)) : yield(new_self[a], new_self[a + 1])
+            i += 1
+            a += 2
+          end
+    elsif 
+        new_self.length.times do
+            yield(new_self[i])
+            i += 1
+          end
     end
     self
   end
@@ -31,16 +33,16 @@ module Enumerable
     i = 0
     a = 0
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    if instance_of?(Array) || instance_of?(Range)
-      new_self.length.times do
-        yield(new_self[i], i)
+    if instance_of?(Hash)
+      while i < new_self.length/2
+        yield(new_self.slice(a,2), i)
         i += 1
+        a += 2
       end
-    elsif instance_of?(Hash)
-        while i < new_self.length/2
-          yield(new_self.slice(a,2), i)
+    elsif 
+        new_self.length.times do
+          yield(new_self[i], i)
           i += 1
-          a += 2
         end
     end
     self
@@ -65,19 +67,36 @@ module Enumerable
     check = 0
     new_self = self
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    while block_given? && i < new_self.length
-      yield(new_self[i]) == true ? check += 1 : check = check
-      i += 1
-    end
-    if parameter.instance_of?(Regexp)
+    if !block_given? && parameter == nil
+      if instance_of?(Hash)
+        check = new_self.length
+      else 
+        new_self.length.times do
+        new_self[i] != nil && new_self[i] != false ? check += 1 : check = check
+        i += 1
+        end
+      end
+    elsif block_given? && parameter == nil
       new_self.length.times do
-        new_self[i] =~ parameter ? check += 1 : check = check
+        yield(new_self[i]) == true ? check += 1 : check = check
         i += 1
       end
-    else
-      new_self.length.times do
-        new_self[i].class == parameter ? check += 1 : check = check
-        i += 1
+    elsif parameter != nil
+      if parameter.instance_of?(Regexp)
+        new_self.length.times do
+          new_self[i] =~ parameter ? check += 1 : check = check
+          i += 1
+        end
+      elsif parameter.instance_of?(Class) 
+        new_self.length.times do
+          new_self[i].is_a?(parameter) ? check += 1 : check = check
+          i += 1
+        end
+      else 
+        new_self.length.times do
+          new_self[i] == parameter ? check += 1 : check = check
+          i += 1
+        end
       end
     end
     check == new_self.length
@@ -88,19 +107,36 @@ module Enumerable
     check = 0
     new_self = self
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    while block_given? && i < new_self.length
-      yield(new_self[i]) == true ? check += 1 : check = check
-      i += 1
-    end
-    if parameter.instance_of?(Regexp)
+    if !block_given? && parameter == nil
+      if instance_of?(Hash)
+        check = 1
+      else
+        new_self.length.times do
+        new_self[i] != nil && new_self[i] != false ? check += 1 : check = check
+        i += 1
+        end
+      end
+    elsif block_given? && parameter == nil
       new_self.length.times do
-        new_self[i] =~ parameter ? check += 1 : check = check
+        yield(new_self[i]) == true ? check += 1 : check = check
         i += 1
       end
-    else
-      new_self.length.times do
-        new_self[i].class == parameter ? check += 1 : check = check
-        i += 1
+    elsif parameter != nil
+      if parameter.instance_of?(Regexp)
+        new_self.length.times do
+          new_self[i] =~ parameter ? check += 1 : check = check
+          i += 1
+        end
+      elsif parameter.instance_of?(Class) 
+        new_self.length.times do
+          new_self[i].is_a?(parameter) ? check += 1 : check = check
+          i += 1
+        end
+      else 
+        new_self.length.times do
+          new_self[i] == parameter ? check += 1 : check = check
+          i += 1
+        end
       end
     end
     check.positive? ? true : false
@@ -111,34 +147,82 @@ module Enumerable
     check = 0
     new_self = self
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    while block_given? && i < new_self.length
-      yield(new_self[i]) == true ? check += 1 : check = check
-      i += 1
-    end
-    if parameter.instance_of?(Regexp)
+    if !block_given? && parameter == nil
+      if instance_of?(Hash)
+        check = 1
+      else
+        new_self.length.times do
+        new_self[i] != nil && new_self[i] != false ? check += 1 : check = check
+        i += 1
+        end
+      end
+    elsif block_given? && parameter == nil
       new_self.length.times do
-        new_self[i] =~ parameter ? check += 1 : check = check
+        yield(new_self[i]) == true ? check += 1 : check = check
         i += 1
       end
-    else
-      new_self.length.times do
-        new_self[i].class == parameter ? check += 1 : check = check
-        i += 1
+    elsif parameter != nil
+      if parameter.instance_of?(Regexp)
+        new_self.length.times do
+          new_self[i] =~ parameter ? check += 1 : check = check
+          i += 1
+        end
+      elsif parameter.instance_of?(Class) 
+        new_self.length.times do
+          new_self[i].is_a?(parameter) ? check += 1 : check = check
+          i += 1
+        end
+      else 
+        new_self.length.times do
+          new_self[i] == parameter ? check += 1 : check = check
+          i += 1
+        end
       end
     end
     check.positive? ? false : true
   end
 
-  def my_count
-    return enum_for(:my_count) unless block_given?
 
-    self_length = length
+  def my_count(parameter = nil)
     i = 0
+    a = 0
     new_self = self
     new_self = new_self.instance_of?(Array) || new_self.instance_of?(Hash) ? flatten : to_a
-    length.times do
-      yield(new_self[i]) == false ? self_length -= 1 : self_length = self_length
-      i += 1
+    self_length = new_self.length
+    if block_given? && parameter == nil
+      if instance_of?(Hash)
+        while i < new_self.length/2
+          new_self[i] = new_self.slice(a,2)
+          new_self[i] == parameter ? self_length = self_length : self_length -= 2
+          i += 1
+          a += 2
+        end
+      else
+        new_self.length.times do
+          yield(new_self[i]) == false ? self_length -= 1 : self_length = self_length
+          i += 1
+        end
+      end
+    elsif !block_given? && parameter != nil
+      if instance_of?(Hash)
+        while i < new_self.length/2
+          new_self[i] = new_self.slice(a,2)
+          new_self[i] == parameter ? self_length = self_length : self_length -= 2
+          i += 1
+          a += 2
+        end
+      else
+        new_self.length.times do
+          new_self[i] == parameter ? self_length = self_length : self_length -= 1
+          i += 1
+        end
+      end
+    else 
+      if instance_of?(Hash)
+        self_length = self_length/2
+      else
+        self_length = self_length
+      end
     end
     self_length
   end
